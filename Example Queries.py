@@ -47,7 +47,7 @@ messages = [
     
 # Read in the descriptions of the activities
 # Set to True to read in descriptions
-if False:
+if True:
     df1=pd.read_csv('Involvement.csv')
     df2=pd.read_csv('Poaching.csv')
     df=df1.append(df2)
@@ -61,18 +61,22 @@ if False:
 
 # Here is the player to be ranked. We have already measured their involvement 
 # and poaching relevant to other players.
-name='Smith'
-involvement = 1.2
-poaching = 1.4
+df_striker=pd.read_excel('StrikersPL2022.xlsx')
+
+name='E. Haaland'
+#name='M. Antonio'
+
+involvement = float(df_striker[df_striker['name']==name]['Involvement'])
+poaching = float(df_striker[df_striker['name']==name]['Poaching'])
 
 player_description = "When it comes to involvement " + name + " is " + describe_level(involvement) +'.'
 player_description = player_description + "When it comes to poaching " + name + " is " + describe_level(poaching)+'.'
 
-start_prompt ="Below is a description of a player's involvement snd their poaching skills':\n\n"
+start_prompt ="Below is a description of a player's involvement and their poaching skills':\n\n"
 end_prompt = "\n Use what you know about involvement and poaching to speculate (using at most two sentences) on the role the player might take in a team."
-end_prompt = "\n Use the data provided to summarise the player in two sentences."
-end_prompt = "\n Explain how the player's involvement in the match is calculated."
-end_prompt = "\n Does the player get involved in the game and if not, should we be worried?"
+#end_prompt = "\n Use the data provided to summarise the player in two sentences."
+#end_prompt = "\n Explain how the player's involvement in the match is calculated."
+#end_prompt = "\n Does the player get involved in the game and if not, should we be worried?"
 
                                                                                          
 # Read in the descriptions up to date
@@ -109,8 +113,3 @@ response = openai.ChatCompletion.create(
 
 GPT_describe=response['choices'][0]['message']['content']
 print(GPT_describe)
-data = pd.DataFrame({"user": player_description, "assistant": GPT_describe}, index=[0])
-current_df = current_df.append(data) 
-    
-current_df.to_excel('Descriptions GPT.xlsx')  
-
